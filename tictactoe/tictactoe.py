@@ -22,7 +22,12 @@ def player(board):
     """
     Returns player who has the next turn on a board.
     """
-    raise NotImplementedError
+    x_count = sum(arr.count("X") for arr in board)
+    o_count = sum(arr.count("O") for arr in board)
+    if x_count > o_count:
+        return "O"
+    else:
+        return "X"
 
 
 def actions(board):
@@ -50,8 +55,23 @@ def terminal(board):
     """
     Returns True if game is over, False otherwise.
     """
-    raise NotImplementedError
+    if sum(arr.count(EMPTY) for arr in board) == 0:
+        return True
+    elif sum(arr.count(EMPTY) for arr in board) == 9:
+        return False
+    
+    for i in range(len(board)):
+        row = board[i]
+        column = [ arr[i] for arr in board ]
+    
+        if column.count(column[0]) == 3 or row.count(row[0]) == 3:
+            return True
+    
+    first_diag = [ board[0][0], board[1][1], board[2][2] ]
+    second_diag = [ board[0][2], board[1][1], board[2][0] ]
 
+    if first_diag.count(first_diag[0]) == 3 or second_diag.count(second_diag[0]) == 3:
+        return True
 
 def utility(board):
     """
