@@ -3,6 +3,7 @@ Tic Tac Toe Player
 """
 
 import math
+import copy
 
 X = "X"
 O = "O"
@@ -34,21 +35,47 @@ def actions(board):
     """
     Returns set of all possible actions (i, j) available on the board.
     """
-    raise NotImplementedError
+    return [(i, j) for i, arr in enumerate(board) for j, elem in enumerate(arr) if board[i][j] != EMPTY]
 
 
 def result(board, action):
     """
     Returns the board that results from making move (i, j) on the board.
     """
-    raise NotImplementedError
+    board_copy = copy.deepcopy(board)
+    current_player = player(board_copy)
+    i, j = action
+    if board_copy[i][j] == EMPTY:
+        board_copy[i][j] = current_player
+        return board_copy
+    else:
+        raise NameError("Can't make that move")
 
 
 def winner(board):
     """
     Returns the winner of the game, if there is one.
     """
-    raise NotImplementedError
+    for i in range(len(board)):
+        row = board[i]
+        column = [ arr[i] for arr in board ]
+    
+        if column.count("X") == 3 or row.count("X") == 3:
+            return "X"
+        
+        if column.count("O") == 3 or row.count("O") == 3:
+            return "O"
+    
+    first_diag = [ board[0][0], board[1][1], board[2][2] ]
+    second_diag = [ board[0][2], board[1][1], board[2][0] ]
+
+    if first_diag.count("X") == 3 or second_diag.count("X") == 3:
+        return "X"
+    
+    if first_diag.count("O") == 3 or second_diag.count("O") == 3:
+        return "O"
+    
+    return None
 
 
 def terminal(board):
