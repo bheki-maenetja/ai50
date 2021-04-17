@@ -35,7 +35,7 @@ def actions(board):
     """
     Returns set of all possible actions (i, j) available on the board.
     """
-    return [(i, j) for i, arr in enumerate(board) for j, elem in enumerate(arr) if board[i][j] != EMPTY]
+    return [(i, j) for i, arr in enumerate(board) for j, elem in enumerate(arr) if board[i][j] == EMPTY]
 
 
 def result(board, action):
@@ -104,11 +104,46 @@ def utility(board):
     """
     Returns 1 if X has won the game, -1 if O has won, 0 otherwise.
     """
-    raise NotImplementedError
+    game_winner = winner(board)
+    if game_winner == "X":
+        return 1
+    elif game_winner == "O":
+        return -1
+    return 0
 
 
 def minimax(board):
     """
     Returns the optimal action for the current player on the board.
     """
-    raise NotImplementedError
+    current_player = player(board)
+    if current_player == "X":
+        action_values = [(action, max_value(result(board, action))) for action in actions(board)]
+        return max(action_values, key=lambda x: x[1])
+    elif current_player == "O":
+        action_values = [(action, min_value(result(board, action))) for action in actions(board)]
+        return min(action_values, key=lambda x: x[1])
+
+def max_value(board):
+    """
+    Returns the highest possible utility value from a given board
+    """
+    v = -math.inf
+    if terminal(board):
+        return utility(board)
+    
+    for action in actions(board):
+        v = max(v, min_value(result(board, action)))
+    return v
+
+def min_value(board):
+    """
+    Returns the lowest possible utility value from a given board
+    """
+    v = math.inf
+    if terminal(board):
+        return utility(board)
+    
+    for action in actions(board):
+        v = min(v, max_value(result(board, action)))
+    return v

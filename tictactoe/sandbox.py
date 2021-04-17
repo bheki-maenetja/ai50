@@ -1,9 +1,11 @@
-from tictactoe import winner
+from tictactoe import minimax
+
 
 EMPTY = None
 
-board = [["X", "X", "O"],
-            ["O", "O", EMPTY],
-            ["O", "O", "X"]]
+board = [[EMPTY, "X", "O"],
+            ["X", "X", EMPTY],
+            [EMPTY, "O", "O"]]
 
-print(winner(board))
+optimal_action = minimax(board)
+print(optimal_action)
