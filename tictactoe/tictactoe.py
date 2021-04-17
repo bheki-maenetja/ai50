@@ -82,24 +82,11 @@ def terminal(board):
     """
     Returns True if game is over, False otherwise.
     """
-    if sum(arr.count(EMPTY) for arr in board) == 0:
+    if sum(arr.count(EMPTY) for arr in board) == 0 or winner(board):
         return True
-    elif sum(arr.count(EMPTY) for arr in board) == 9:
-        return False
-    
-    for i in range(len(board)):
-        row = board[i]
-        column = [ arr[i] for arr in board ]
-    
-        if column.count(column[0]) == 3 or row.count(row[0]) == 3:
-            return True
-    
-    first_diag = [ board[0][0], board[1][1], board[2][2] ]
-    second_diag = [ board[0][2], board[1][1], board[2][0] ]
+    return False
 
-    if first_diag.count(first_diag[0]) == 3 or second_diag.count(second_diag[0]) == 3:
-        return True
-
+    
 def utility(board):
     """
     Returns 1 if X has won the game, -1 if O has won, 0 otherwise.
@@ -118,11 +105,11 @@ def minimax(board):
     """
     current_player = player(board)
     if current_player == "X":
-        action_values = [(action, max_value(result(board, action))) for action in actions(board)]
-        return max(action_values, key=lambda x: x[1])
-    elif current_player == "O":
         action_values = [(action, min_value(result(board, action))) for action in actions(board)]
-        return min(action_values, key=lambda x: x[1])
+        return max(action_values, key=lambda x: x[1])[0]
+    elif current_player == "O":
+        action_values = [(action, max_value(result(board, action))) for action in actions(board)]
+        return min(action_values, key=lambda x: x[1])[0]
 
 def max_value(board):
     """
