@@ -189,7 +189,39 @@ class MinesweeperAI():
             5) add any new sentences to the AI's knowledge base
                if they can be inferred from existing knowledge
         """
-        raise NotImplementedError
+        self.moves_made.add(cell)
+        self.mark_safe(cell)
+
+        new_cell_set = set()
+
+        for i in range(cell[0] - 1, cell[0] + 2):
+            for j in range(cell[1] - 1, cell[1] + 2):
+                if 0 <= i < self.height and 0 <= j < self.width and (i,j) != cell:
+                    new_cell_set.add((i,j))
+
+        new_sentence = Sentence(new_cell_set, count)
+        self.knowledge.append(new_sentence)
+
+        for sentence in self.knowledge:
+            known_safes = sentence.known_safes().copy()
+            known_mines = sentence.known_mines().copy()
+            while known_safes != set():
+                safe_cell = known_safes.pop()
+                self.mark_safe(safe_cell)
+            
+            while known_mines != set():
+                mine_cell = known_mines.pop()
+                self.mark_mine(mine_cell)
+        
+        new_knowledge = []
+        for sentence1, sentence2 in itertools.combinations(self.knowledge, 2):
+            if sentence1.cells.issubset(sentence2.cells):
+                new_sentence_set = sentence2.cells - sentence1.cells
+                new_sentence_count = sentence2.count - sentence1.count
+                new_knowledge.append(Sentence(new_sentence_set, new_sentence_count))
+        
+        self.knowledge += new_knowledge
+        self.knowledge = [ sentence for sentence in self.knowledge if sentence != Sentence(set(), 0)]
 
     def make_safe_move(self):
         """
@@ -201,9 +233,10 @@ class MinesweeperAI():
         and self.moves_made, but should not modify any of those values.
         """
         all_safe_moves = self.safes.difference(self.moves_made)
-        safe_cell = all_safe_moves.pop()
-        if safe_cell: return safe_cell
-        return None
+        try:
+            return all_safe_moves.pop()
+        except KeyError:
+            return None
 
     def make_random_move(self):
         """
@@ -212,5 +245,7 @@ class MinesweeperAI():
             1) have not already been chosen, and
             2) are not known to be mines
         """
-        all_cells = { sentence.cells for sentence in self.knowledge }
-        return all_cells.difference(self.moves_made.union(self.mines)).pop()
+        new_cell = ( random.randint(0, self.height - 1), random.randint(0, self.width - 1) )
+        while new_cell in self.mines or new_cell in self.moves_made:
+            new_cell = ( random.randint(0, self.height - 1), random.randint(0, self.width - 1) )
+        return new_cell
