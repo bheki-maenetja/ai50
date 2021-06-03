@@ -1,3 +1,4 @@
+from hashlib import new
 import os
 import random
 import re
@@ -11,7 +12,6 @@ def main():
     if len(sys.argv) != 2:
         sys.exit("Usage: python pagerank.py corpus")
     corpus = crawl(sys.argv[1])
-    print(transition_model(corpus, "search.html", DAMPING))
     ranks = sample_pagerank(corpus, DAMPING, SAMPLES)
     print(f"PageRank Results from Sampling (n = {SAMPLES})")
     for page in sorted(ranks):
@@ -75,7 +75,17 @@ def sample_pagerank(corpus, damping_factor, n):
     their estimated PageRank value (a value between 0 and 1). All
     PageRank values should sum to 1.
     """
-    raise NotImplementedError
+    start_page = random.choice(list(corpus.keys()))
+    new_model = transition_model(corpus, start_page, damping_factor)
+    
+    markov_chain = []
+    for i in range(n):
+        new_page = random.choices(list(new_model.keys()), weights=list(new_model.values()))[0]
+        markov_chain.append(new_page)
+        new_model = transition_model(corpus, new_page, damping_factor)
+    
+    page_rank_dict = { key : round(markov_chain.count(key) / n, 5) for key in corpus.keys() }
+    return page_rank_dict
 
 
 def iterate_pagerank(corpus, damping_factor):
