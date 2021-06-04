@@ -59,8 +59,9 @@ def transition_model(corpus, page, damping_factor):
     a link at random chosen from all pages in the corpus.
     """
     linked_pages = corpus[page]
-    new_damping_factor = round(damping_factor / len(linked_pages), 5)
-    non_damping_factor = round((1 - damping_factor) / (len(linked_pages) + 1), 5)
+    num_linked_pages = len(linked_pages) if len(linked_pages) != 0 else len(corpus)
+    new_damping_factor = round(damping_factor / num_linked_pages, 5)
+    non_damping_factor = round((1 - damping_factor) / (num_linked_pages + 1), 5)
     transition_model = { page : non_damping_factor }
     transition_model.update({ linked_page : non_damping_factor + new_damping_factor for linked_page in linked_pages })
     return transition_model
@@ -102,8 +103,6 @@ def iterate_pagerank(corpus, damping_factor):
 
     page_rank_dict = { key: 1/num_pages for key in corpus }
     new_and_prev_ranks = { key: (page_rank_dict[key], 0) for key in page_rank_dict }
-
-    # condition = all(abs(tup[0] - tup[1]) < 0.001 for tup in new_and_prev_ranks.values())
 
     while not all(abs(tup[0] - tup[1]) < 0.001 for tup in new_and_prev_ranks.values()):
         for page in page_rank_dict:
