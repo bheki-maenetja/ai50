@@ -3,6 +3,7 @@ import os
 import random
 import re
 import sys
+import math
 
 DAMPING = 0.85
 SAMPLES = 10000
@@ -102,18 +103,24 @@ def iterate_pagerank(corpus, damping_factor):
     num_pages = len(corpus)
 
     page_rank_dict = { key: 1/num_pages for key in corpus }
-    new_and_prev_ranks = { key: (page_rank_dict[key], 0) for key in page_rank_dict }
+    prev_ranks = { key: page_rank_dict[key] for key in page_rank_dict }
 
-    while not all(abs(tup[0] - tup[1]) < 0.001 for tup in new_and_prev_ranks.values()):
+    while True:
         for page in page_rank_dict:
-            current_rank = page_rank_dict[page]
-            new_rank = (non_damping_factor / num_pages)
-            for linked_page in corpus[page]:
-                num_links = len(corpus[linked_page]) if len(corpus[linked_page]) != 0 else len(corpus)
-                new_rank += damping_factor * page_rank_dict[linked_page] / num_links
+            prev_ranks[page] = page_rank_dict[page]
+            sum_total = 0
+            for linked_page in corpus:
+                num_links = len(corpus[linked_page])
+                if num_links == 0:
+                    sum_total += page_rank_dict[linked_page] / num_pages
+                elif page in corpus[linked_page]:
+                    sum_total += page_rank_dict[linked_page] / len(corpus[linked_page])
+            new_rank = (non_damping_factor / num_pages) + damping_factor * sum_total
             page_rank_dict[page] = new_rank
-            new_and_prev_ranks[page] = (current_rank, new_rank)
-    
+        
+        if all(math.isclose(page_rank_dict[page], prev_ranks[page], abs_tol=0.001) for page in page_rank_dict):
+            break
+
     return page_rank_dict
 
 if __name__ == "__main__":
