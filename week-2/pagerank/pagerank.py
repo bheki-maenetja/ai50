@@ -60,11 +60,18 @@ def transition_model(corpus, page, damping_factor):
     a link at random chosen from all pages in the corpus.
     """
     linked_pages = corpus[page]
-    num_linked_pages = len(linked_pages) if len(linked_pages) != 0 else len(corpus)
-    new_damping_factor = round(damping_factor / num_linked_pages, 5)
-    non_damping_factor = round((1 - damping_factor) / (num_linked_pages + 1), 5)
-    transition_model = { page : non_damping_factor }
-    transition_model.update({ linked_page : non_damping_factor + new_damping_factor for linked_page in linked_pages })
+    
+    if len(linked_pages) != 0:
+        num_linked_pages = len(linked_pages)
+        new_damping_factor = round(damping_factor / num_linked_pages, 5)
+        non_damping_factor = round((1 - damping_factor) / (num_linked_pages + 1), 5)
+
+        transition_model = { page : non_damping_factor }
+        transition_model.update({ linked_page : non_damping_factor + new_damping_factor for linked_page in linked_pages })
+    else:
+        num_linked_pages = len(corpus)
+        transition_model = { page : 1/num_linked_pages for page in corpus }
+  
     return transition_model
 
 
@@ -82,7 +89,8 @@ def sample_pagerank(corpus, damping_factor, n):
     
     markov_chain = []
     for i in range(n):
-        new_page = random.choices(list(new_model.keys()), weights=list(new_model.values()))[0]
+        weighted_choices = list(new_model.items())
+        new_page = random.choices([c[0] for c in weighted_choices], weights=[c[1] for c in weighted_choices])[0]
         markov_chain.append(new_page)
         new_model = transition_model(corpus, new_page, damping_factor)
     
