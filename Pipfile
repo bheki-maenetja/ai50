@@ -8,6 +8,8 @@ verify_ssl = true
 [packages]
 pygame = "==2.0.1"
 scipy = "*"
+pylint = "*"
+pillow = "*"
 
 [requires]
 python_version = "3.7"
