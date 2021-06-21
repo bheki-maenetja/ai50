@@ -97,9 +97,12 @@ class CrosswordCreator():
         """
         Update `self.domains` such that each variable is node-consistent.
         (Remove any values that are inconsistent with a variable's unary
-         constraints; in this case, the length of the word.)
+        constraints; in this case, the length of the word.)
         """
-        raise NotImplementedError
+        self.domains = {
+            var: {word for word in domain if len(word) == var.length} 
+            for var, domain in self.domains.items()
+        }
 
     def revise(self, x, y):
         """
