@@ -1,4 +1,5 @@
 import sys
+from itertools import permutations
 
 from crossword import *
 
@@ -113,7 +114,15 @@ class CrosswordCreator():
         Return True if a revision was made to the domain of `x`; return
         False if no revision was made.
         """
-        raise NotImplementedError
+        revised = False
+        overlap = self.crossword.overlaps[x, y]
+        if overlap == None:
+            return revised
+        
+        for x_word in self.domains[x]:
+            print(list(y_word for y_word in self.domains[y] if y_word[overlap[1]] == x_word[overlap[0]]))
+        
+        return revised
 
     def ac3(self, arcs=None):
         """
@@ -124,6 +133,9 @@ class CrosswordCreator():
         Return True if arc consistency is enforced and no domains are empty;
         return False if one or more domains end up empty.
         """
+        if arcs == None:
+            arcs = list(permutations([x for x in self.domains.keys()], 2))
+        print(arcs)
         raise NotImplementedError
 
     def assignment_complete(self, assignment):
