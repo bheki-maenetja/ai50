@@ -1,5 +1,4 @@
 import sys
-from itertools import permutations
 
 from crossword import *
 
@@ -116,8 +115,6 @@ class CrosswordCreator():
         """
         revised = False
         overlap = self.crossword.overlaps[x, y]
-        if overlap == None:
-            return revised
         
         x_words = self.domains[x].copy()
 
@@ -143,11 +140,23 @@ class CrosswordCreator():
         return False if one or more domains end up empty.
         """
         if arcs == None:
-            arcs = list(permutations([x for x in self.domains.keys()], 2))
+            arcs = [
+                overlap for overlap in self.crossword.overlaps 
+                if self.crossword.overlaps[overlap]
+            ]
+
+        while arcs != []:
+            x, y = arcs[0][0], arcs[0][1]
+            arcs = arcs[1:]
+
+            if self.revise(x, y):
+                if len(self.domains[x]) == 0:
+                    return False
+                for neighbour in self.crossword.neighbors(x).difference({y}):
+                    arcs.append((neighbour, x))
         
-        for arc in arcs:
-            self.revise(arc[0], arc[1])
-        raise NotImplementedError
+        return True
+                
 
     def assignment_complete(self, assignment):
         """
