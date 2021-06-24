@@ -119,9 +119,18 @@ class CrosswordCreator():
         if overlap == None:
             return revised
         
-        for x_word in self.domains[x]:
-            print(list(y_word for y_word in self.domains[y] if y_word[overlap[1]] == x_word[overlap[0]]))
-        
+        x_words = self.domains[x].copy()
+
+        for x_word in x_words:
+            match_found = any(
+                y_word for y_word in self.domains[y] 
+                if y_word[overlap[1]] == x_word[overlap[0]]
+            )
+
+            if not match_found:
+                self.domains[x].remove(x_word)
+                revised = True
+
         return revised
 
     def ac3(self, arcs=None):
@@ -135,7 +144,9 @@ class CrosswordCreator():
         """
         if arcs == None:
             arcs = list(permutations([x for x in self.domains.keys()], 2))
-        print(arcs)
+        
+        for arc in arcs:
+            self.revise(arc[0], arc[1])
         raise NotImplementedError
 
     def assignment_complete(self, assignment):
