@@ -187,7 +187,7 @@ class CrosswordCreator():
                 overlap = self.crossword.overlaps[var, neighbour]
                 if not overlap:
                     return False
-                if assignment[var][overlap[0]] != assignment[var][overlap[1]]:
+                if assignment[var][overlap[0]] != assignment[neighbour][overlap[1]]:
                     return False
         
         return True
