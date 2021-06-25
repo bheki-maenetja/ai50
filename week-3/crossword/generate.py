@@ -164,14 +164,34 @@ class CrosswordCreator():
         crossword variable); return False otherwise.
         """
         if assignment == {}: return False
-        return all(value for value in assignment.values())
+        return (
+            all(value for value in assignment.values()) and 
+            len(self.domains) == len(assignment)
+        )
 
     def consistent(self, assignment):
         """
         Return True if `assignment` is consistent (i.e., words fit in crossword
         puzzle without conflicting characters); return False otherwise.
         """
-        raise NotImplementedError
+        if len(set(assignment.values())) != len(assignment):
+            return False
+        
+        if any(w for v, w in assignment.items() if v.length != len(w)):
+            return False
+        
+        for var in assignment:
+            neighbors = self.crossword.neighbors(var)
+            assigned_neighbors = neighbors.intersection(set(assignment.keys()))
+            for neighbour in assigned_neighbors:
+                overlap = self.crossword.overlaps[var, neighbour]
+                if not overlap:
+                    return False
+                if assignment[var][overlap[0]] != assignment[var][overlap[1]]:
+                    return False
+        
+        return True
+
 
     def order_domain_values(self, var, assignment):
         """
@@ -215,10 +235,23 @@ class CrosswordCreator():
 
         If no assignment is possible, return None.
         """
-        if self.assignment_complete(assignment): return assignment
+        if self.assignment_complete(assignment): 
+            return assignment
+        
         var = self.select_unassigned_variable(assignment)
-        # print(self.order_domain_values(var, assignment))
-        print(var, self.domains[var])
+        
+        for value in self.order_domain_values(var, assignment):
+            test_assignment = {var:value}
+            test_assignment.update(assignment)
+            
+            if self.consistent(test_assignment):
+                assignment.update({var:value})
+                result = self.backtrack(assignment)
+                if result != None:
+                    return result
+                del assignment[var]
+        
+        return None
 
 
 def main():
