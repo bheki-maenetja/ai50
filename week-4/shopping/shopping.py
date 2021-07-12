@@ -83,7 +83,6 @@ def load_data(filename):
                 1 if row['VisitorType'] == "Returning_Visitor" else 0,
                 1 if row['Weekend'] == "TRUE" else 0,
             ])
-            print(evidence)
             labels.append(1 if row['Revenue'] == "TRUE" else 0)
     
     return (evidence, labels)
@@ -94,7 +93,9 @@ def train_model(evidence, labels):
     Given a list of evidence lists and a list of labels, return a
     fitted k-nearest neighbor model (k=1) trained on the data.
     """
-    raise NotImplementedError
+    model = KNeighborsClassifier(n_neighbors=1)
+    model.fit(evidence, labels)
+    return model
 
 
 def evaluate(labels, predictions):
@@ -112,14 +113,20 @@ def evaluate(labels, predictions):
     representing the "true negative rate": the proportion of
     actual negative labels that were accurately identified.
     """
-    raise NotImplementedError
+    return (
+        sum(1 for l,p in zip(labels, predictions) if l == p == 1) 
+        / sum(1 for p in predictions if p == 1),
+        sum(1 for l,p in zip(labels, predictions) if l == p == 0) 
+        / sum(1 for p in predictions if p == 0),
+    )
+    
 
 # Helper Functions
 def get_month_value(abbreviation):
     return [
         'Jan',
         'Feb',
-        'March',
+        'Mar',
         'Apr',
         'May',
         'June',
