@@ -59,7 +59,34 @@ def load_data(filename):
     labels should be the corresponding list of labels, where each label
     is 1 if Revenue is true, and 0 otherwise.
     """
-    raise NotImplementedError
+    evidence = []
+    labels = []
+    with open(filename) as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            evidence.append([
+                int(row['Administrative']),
+                float(row['Administrative_Duration']),
+                int(row['Informational']),
+                float(row['Informational_Duration']),
+                int(row['ProductRelated']),
+                float(row['ProductRelated_Duration']),
+                float(row['BounceRates']),
+                float(row['ExitRates']),
+                float(row['PageValues']),
+                float(row['SpecialDay']),
+                get_month_value(row['Month']),
+                int(row['OperatingSystems']),
+                int(row['Browser']),
+                int(row['Region']),
+                int(row['TrafficType']),
+                1 if row['VisitorType'] == "Returning_Visitor" else 0,
+                1 if row['Weekend'] == "TRUE" else 0,
+            ])
+            print(evidence)
+            labels.append(1 if row['Revenue'] == "TRUE" else 0)
+    
+    return (evidence, labels)
 
 
 def train_model(evidence, labels):
@@ -87,6 +114,22 @@ def evaluate(labels, predictions):
     """
     raise NotImplementedError
 
+# Helper Functions
+def get_month_value(abbreviation):
+    return [
+        'Jan',
+        'Feb',
+        'March',
+        'Apr',
+        'May',
+        'June',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec'
+    ].index(abbreviation)
 
 if __name__ == "__main__":
     main()
