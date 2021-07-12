@@ -10,6 +10,7 @@ pygame = "==2.0.1"
 scipy = "*"
 pylint = "*"
 pillow = "*"
+scikit-learn = "*"
 
 [requires]
 python_version = "3.7"
