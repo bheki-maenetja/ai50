@@ -9,8 +9,9 @@ verify_ssl = true
 pygame = "==2.0.1"
 scipy = "*"
 pylint = "*"
-pillow = "*"
 scikit-learn = "*"
+opencv-python = "==4.5.3.56"
+tensorflow = "*"
 
 [requires]
 python_version = "3.9"
