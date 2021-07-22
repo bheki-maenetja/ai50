@@ -1,3 +1,4 @@
+from posixpath import dirname
 import cv2
 import numpy as np
 import os
@@ -58,7 +59,18 @@ def load_data(data_dir):
     be a list of integer labels, representing the categories for each of the
     corresponding `images`.
     """
-    raise NotImplementedError
+    main_path = os.path.join(os.path.dirname(__file__), data_dir)
+    images = []
+    labels = []
+    
+    for i in range(NUM_CATEGORIES):
+        folder_path = os.path.join(main_path, f"{i}")
+        for file in os.listdir(folder_path):
+            img = cv2.imread(os.path.join(folder_path, file))
+            images.append(np.resize(img, (IMG_HEIGHT, IMG_WIDTH, 3)))
+            labels.append(i)
+    
+    return (images, labels)
 
 
 def get_model():
