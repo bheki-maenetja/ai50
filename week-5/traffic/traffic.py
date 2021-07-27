@@ -79,7 +79,24 @@ def get_model():
     `input_shape` of the first layer is `(IMG_WIDTH, IMG_HEIGHT, 3)`.
     The output layer should have `NUM_CATEGORIES` units, one for each category.
     """
-    raise NotImplementedError
+    model =  tf.keras.Sequential([
+        tf.keras.layers.Conv2D(
+            32, (3,3), activation="sigmoid", input_shape=(IMG_WIDTH, IMG_HEIGHT, 3)
+        ),
+        tf.keras.layers.MaxPooling2D(pool_size=(5,5)),
+        tf.keras.layers.Flatten(),
+        tf.keras.layers.Dense(128, activation="sigmoid"),
+        tf.keras.layers.Dropout(0.5),
+        tf.keras.layers.Dense(NUM_CATEGORIES, activation="sigmoid")
+    ])
+
+    model.compile(
+        optimizer="sgd",
+        loss="categorical_crossentropy",
+        metrics=["accuracy"]
+    )
+    
+    return model
 
 
 if __name__ == "__main__":
