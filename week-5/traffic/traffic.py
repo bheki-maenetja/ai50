@@ -80,12 +80,20 @@ def get_model():
     The output layer should have `NUM_CATEGORIES` units, one for each category.
     """
     model =  tf.keras.Sequential([
+
+        # Pooling and Convolution
         tf.keras.layers.Conv2D(
             32, (3,3), activation="sigmoid", input_shape=(IMG_WIDTH, IMG_HEIGHT, 3)
         ),
-        tf.keras.layers.MaxPooling2D(pool_size=(3,3)),
+        tf.keras.layers.MaxPooling2D(),
+        tf.keras.layers.Conv2D(64, (3,3), activation="sigmoid"),
+        tf.keras.layers.MaxPooling2D(),
+        
+        # Flattening
         tf.keras.layers.Flatten(),
-        tf.keras.layers.Dense(128, activation="sigmoid"),
+
+        # Hidden Layers and Dropout
+        tf.keras.layers.Dense(1024, activation="sigmoid"),
         tf.keras.layers.Dropout(0.5),
         tf.keras.layers.Dense(NUM_CATEGORIES, activation="sigmoid")
     ])
