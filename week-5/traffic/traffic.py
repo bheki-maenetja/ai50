@@ -83,7 +83,7 @@ def get_model():
         tf.keras.layers.Conv2D(
             32, (3,3), activation="sigmoid", input_shape=(IMG_WIDTH, IMG_HEIGHT, 3)
         ),
-        tf.keras.layers.MaxPooling2D(pool_size=(5,5)),
+        tf.keras.layers.MaxPooling2D(pool_size=(3,3)),
         tf.keras.layers.Flatten(),
         tf.keras.layers.Dense(128, activation="sigmoid"),
         tf.keras.layers.Dropout(0.5),
@@ -91,7 +91,7 @@ def get_model():
     ])
 
     model.compile(
-        optimizer="sgd",
+        optimizer="adam",
         loss="categorical_crossentropy",
         metrics=["accuracy"]
     )
