@@ -93,8 +93,8 @@ def get_model():
         tf.keras.layers.Flatten(),
 
         # Hidden Layers and Dropout
-        tf.keras.layers.Dense(1024, activation="sigmoid"),
-        tf.keras.layers.Dropout(0.5),
+        tf.keras.layers.Dense(2048, activation="sigmoid"),
+        tf.keras.layers.Dropout(0.1),
         tf.keras.layers.Dense(NUM_CATEGORIES, activation="sigmoid")
     ])
 
