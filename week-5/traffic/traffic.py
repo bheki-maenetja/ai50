@@ -83,18 +83,20 @@ def get_model():
 
         # Pooling and Convolution
         tf.keras.layers.Conv2D(
-            32, (3,3), activation="sigmoid", input_shape=(IMG_WIDTH, IMG_HEIGHT, 3)
+            32, (3,3), activation="softsign", input_shape=(IMG_WIDTH, IMG_HEIGHT, 3)
         ),
         tf.keras.layers.MaxPooling2D(),
-        tf.keras.layers.Conv2D(64, (3,3), activation="sigmoid"),
+        tf.keras.layers.Conv2D(32, (3,3), activation="softsign"),
         tf.keras.layers.MaxPooling2D(),
         
         # Flattening
         tf.keras.layers.Flatten(),
 
-        # Hidden Layers and Dropout
-        tf.keras.layers.Dense(2048, activation="sigmoid"),
-        tf.keras.layers.Dropout(0.1),
+        # Hidden Layers
+        tf.keras.layers.Dense(128, activation="sigmoid"),
+
+        # Dropout
+        tf.keras.layers.Dropout(0.5),
         tf.keras.layers.Dense(NUM_CATEGORIES, activation="sigmoid")
     ])
 
