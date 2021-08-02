@@ -97,7 +97,7 @@ def get_model():
         tf.keras.layers.Dense(512, activation="sigmoid"),
 
         # Dropout
-        tf.keras.layers.Dropout(0.4),
+        tf.keras.layers.Dropout(0.1),
 
         # Output Layer
         tf.keras.layers.Dense(NUM_CATEGORIES, activation="sigmoid")
