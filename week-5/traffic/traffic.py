@@ -67,7 +67,11 @@ def load_data(data_dir):
         folder_path = os.path.join(main_path, f"{i}")
         for file in os.listdir(folder_path):
             img = cv2.imread(os.path.join(folder_path, file))
-            images.append(np.resize(img, (IMG_WIDTH, IMG_HEIGHT, 3)))
+            images.append(
+                cv2.resize(
+                    img, (IMG_WIDTH, IMG_HEIGHT), interpolation=cv2.INTER_AREA
+                )
+            )
             labels.append(i)
     
     return (images, labels)
@@ -93,10 +97,10 @@ def get_model():
         tf.keras.layers.Flatten(),
 
         # Hidden Layers with Dropout
-        tf.keras.layers.Dropout(0.1),
-        tf.keras.layers.Dense(NUM_CATEGORIES * 20, activation="sigmoid"),
-        tf.keras.layers.Dropout(0.1),
-        tf.keras.layers.Dense(NUM_CATEGORIES * 15, activation="sigmoid"),
+        tf.keras.layers.Dropout(0.5),
+        tf.keras.layers.Dense(NUM_CATEGORIES * 10, activation="sigmoid"),
+        tf.keras.layers.Dropout(0.5),
+        tf.keras.layers.Dense(NUM_CATEGORIES * 5, activation="sigmoid"),
 
         # Output Layer
         tf.keras.layers.Dense(NUM_CATEGORIES, activation="sigmoid")
