@@ -12,6 +12,7 @@ pylint = "*"
 scikit-learn = "*"
 opencv-python = "==4.5.3.56"
 tensorflow = "*"
+nltk = "*"
 
 [requires]
 python_version = "3.9"
