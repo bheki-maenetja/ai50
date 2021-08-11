@@ -23,12 +23,19 @@ AP -> Adj | Adj AP | Det AP
 PP -> P | P NP 
 """
 
-# S -> N V Det Adj Adj Adj N P Det N P Det N
+# S -> N V P Det Adj N Conj N V
+# S -> [NP] [VP] [PP] [N] [Conj] [NP] [VP]
+# S -> [NP] [VP] [PP] [NP] [VP]
 ALTTERMINALS = """
+S -> NP VP | NP | VP | NP Conj VP | S Conj S | S PP S
 
+NP -> N | Det N | AP NP | N PP | NP Conj NP
+VP -> V | V NP | V PP | V NP PP
+AP -> Adj | Adj AP | Det AP
+PP -> P NP | P AP 
 """
 
-grammar = nltk.CFG.fromstring(NONTERMINALS + TERMINALS)
+grammar = nltk.CFG.fromstring(ALTTERMINALS + TERMINALS)
 parser = nltk.ChartParser(grammar)
 
 
