@@ -15,24 +15,6 @@ V -> "smiled" | "tell" | "were"
 """
 
 NONTERMINALS = """
-S -> NP VP | NP | VP | S Conj S
-
-NP -> N | Det N | AP NP | N PP | NP Conj NP
-VP -> V | V NP | V PP | V NP PP
-AP -> Adj | Adj AP | Det AP
-PP -> P NP | P AP 
-"""
-
-# S -> N Adv V Det N Conj N V P Det N Adv
-# S -> [NP] [Adv] [VP] [NP] [Conj] [NP] [VP] [PP] [Adv]
-# S -> [NP] [Adv] [VP] [NP] [VP] [PP] [Adv]
-# S -> [NP] [ADVP] [NP] [VP] [ADVP]
-#
-
-# S -> N V Adv Conj V Det N
-# S -> [NP] [VP] [Adv] [Conj] [NP]
-# S -> [NP] [ADVP] [Conj] [NP]
-ALTTERMINALS = """
 S -> NP VP | NP | VP | NP ADVP | S Conj S
 
 NP -> N | Det N | AP NP | N PP | NP Conj NP
@@ -42,7 +24,7 @@ PP -> P NP | P AP
 ADVP -> VP Adv | Adv VP | PP Adv
 """
 
-grammar = nltk.CFG.fromstring(ALTTERMINALS + TERMINALS)
+grammar = nltk.CFG.fromstring(NONTERMINALS + TERMINALS)
 parser = nltk.ChartParser(grammar)
 
 
