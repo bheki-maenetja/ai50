@@ -15,10 +15,10 @@ V -> "smiled" | "tell" | "were"
 """
 
 NONTERMINALS = """
-S -> NP VP
+S -> NP VP | NP | VP
 
 AP -> A | A AP
-NP -> N | D NP | AP NP | N PP
+NP -> N | Det NP | AP NP | N PP
 PP -> P NP
 VP -> V | V NP | V NP PP
 """
