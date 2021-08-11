@@ -15,24 +15,31 @@ V -> "smiled" | "tell" | "were"
 """
 
 NONTERMINALS = """
-S -> NP VP | NP | VP | NP Conj NP | NP Conj VP
-
-NP -> N | Det N | AP NP | N PP
-VP -> V | V NP | V PP | V NP PP
-AP -> Adj | Adj AP | Det AP
-PP -> P | P NP 
-"""
-
-# S -> N V P Det Adj N Conj N V
-# S -> [NP] [VP] [PP] [N] [Conj] [NP] [VP]
-# S -> [NP] [VP] [PP] [NP] [VP]
-ALTTERMINALS = """
-S -> NP VP | NP | VP | NP Conj VP | S Conj S | S PP S
+S -> NP VP | NP | VP | S Conj S
 
 NP -> N | Det N | AP NP | N PP | NP Conj NP
 VP -> V | V NP | V PP | V NP PP
 AP -> Adj | Adj AP | Det AP
 PP -> P NP | P AP 
+"""
+
+# S -> N Adv V Det N Conj N V P Det N Adv
+# S -> [NP] [Adv] [VP] [NP] [Conj] [NP] [VP] [PP] [Adv]
+# S -> [NP] [Adv] [VP] [NP] [VP] [PP] [Adv]
+# S -> [NP] [ADVP] [NP] [VP] [ADVP]
+#
+
+# S -> N V Adv Conj V Det N
+# S -> [NP] [VP] [Adv] [Conj] [NP]
+# S -> [NP] [ADVP] [Conj] [NP]
+ALTTERMINALS = """
+S -> NP VP | NP | VP | NP ADVP | S Conj S
+
+NP -> N | Det N | AP NP | N PP | NP Conj NP
+VP -> V | V NP | V PP | V NP PP
+AP -> Adj | Adj AP | Det AP
+PP -> P NP | P AP
+ADVP -> VP Adv | Adv VP | PP Adv
 """
 
 grammar = nltk.CFG.fromstring(ALTTERMINALS + TERMINALS)
