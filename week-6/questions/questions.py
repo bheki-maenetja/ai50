@@ -1,7 +1,7 @@
 import nltk
 import sys
 import os
-import string
+from string import punctuation
 from math import log1p
 
 FILE_MATCHES = 1
@@ -69,7 +69,7 @@ def tokenize(document):
     Process document by coverting all words to lowercase, and removing any
     punctuation or English stopwords.
     """
-    banned = list(string.punctuation) + nltk.corpus.stopwords.words("english")
+    banned = list(punctuation) + nltk.corpus.stopwords.words("english")
 
     return [
         word.lower() for word in nltk.word_tokenize(document)
@@ -109,7 +109,21 @@ def top_files(query, files, idfs, n):
     to their IDF values), return a list of the filenames of the the `n` top
     files that match the query, ranked according to tf-idf.
     """
-    raise NotImplementedError
+    tf_idf_scores = { file: 0 for file in files }
+
+    for word in query:
+        for file in files:
+            tf = files[file].count(word)
+            idf = idfs.get(word)
+            tf_idf_scores[file] += tf * idf
+    
+    ranked_files = sorted(
+        tf_idf_scores.items(), 
+        key=lambda x: x[1], 
+        reverse=True
+    )
+
+    return [file[0] for file in ranked_files][:n]     
 
 
 def top_sentences(query, sentences, idfs, n):
