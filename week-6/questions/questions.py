@@ -148,8 +148,6 @@ def top_sentences(query, sentences, idfs, n):
         reverse=True
     )
 
-    for sent in ranked_sents:
-        print(sent)
     return [sent[0] for sent in ranked_sents][:n]
 
 
