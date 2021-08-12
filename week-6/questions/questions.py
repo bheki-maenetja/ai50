@@ -134,7 +134,23 @@ def top_sentences(query, sentences, idfs, n):
     the query, ranked according to idf. If there are ties, preference should
     be given to sentences that have a higher query term density.
     """
-    raise NotImplementedError
+    sentence_scores = { sent: [0, 0] for sent in sentences }
+    
+    for sent in sentences:
+        common_words = query.intersection(set(sentences[sent]))
+        sentence_scores[sent][1] = len(common_words)
+        for word in common_words:
+            sentence_scores[sent][0] += idfs.get(word)
+    
+    ranked_sents = sorted(
+        sentence_scores.items(),
+        key=lambda x: (x[1][0], x[1][1]),
+        reverse=True
+    )
+
+    for sent in ranked_sents:
+        print(sent)
+    return [sent[0] for sent in ranked_sents][:n]
 
 
 if __name__ == "__main__":
