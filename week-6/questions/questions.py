@@ -2,6 +2,7 @@ import nltk
 import sys
 import os
 import string
+from math import log1p
 
 FILE_MATCHES = 1
 SENTENCE_MATCHES = 1
@@ -75,7 +76,6 @@ def tokenize(document):
         if word.lower() not in banned
     ]
 
-
 def compute_idfs(documents):
     """
     Given a dictionary of `documents` that maps names of documents to a list
@@ -84,7 +84,22 @@ def compute_idfs(documents):
     Any word that appears in at least one of the documents should be in the
     resulting dictionary.
     """
-    raise NotImplementedError
+    file_idfs = dict()
+    unique_words = set()
+
+    total_docs = len(documents)
+
+    for doc in documents:
+        unique_words = set().union(unique_words, set(documents[doc]))
+    
+    for word in unique_words:
+        num_appearances = sum(
+            1 for doc in documents 
+            if word in documents[doc]
+        )
+        file_idfs[word] = log1p(total_docs / num_appearances)
+    
+    return file_idfs
 
 
 def top_files(query, files, idfs, n):
